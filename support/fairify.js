@@ -304,6 +304,26 @@ const QuadBuilder = {
 	duplicateStart: true
 };
 
+const CubicBuilder = {
+	corner(sink, gizmo, z) {
+		sink.push(Transform.transformPoint(gizmo, Point.cornerFrom(z)).round(4));
+	},
+	arc(sink, gizmo, arc) {
+		if (arc.isAlmostLinear(1)) return;
+		const cubicPoints = curveUtil.autoCubify(arc, 1);
+		for (let i = 0; i < cubicPoints.length; i++) {
+			const z = cubicPoints[i];
+			if (i % 3 == 2)
+				sink.push(Transform.transformPoint(gizmo, Point.cornerFrom(z)).round(4));
+			else
+				sink.push(Transform.transformPoint(gizmo, Point.offFrom(z)).round(4));
+		}
+	},
+	split: true,
+	canonicalStart: true,
+	duplicateStart: true
+};
+
 const SpiroBuilder = {
 	corner(sink, gizmo, z) {
 		sink.push(Transform.transformPoint(gizmo, Point.cornerFrom(z)));
@@ -352,6 +372,9 @@ function fairifyImpl(sourceCubicContour, gizmo, builder) {
 
 exports.fairifyQuad = function (sourceCubicContour, gizmo) {
 	return fairifyImpl(sourceCubicContour, gizmo, QuadBuilder);
+};
+exports.fairifyCubic = function (sourceCubicContour, gizmo) {
+	return fairifyImpl(sourceCubicContour, gizmo, CubicBuilder);
 };
 exports.fairifySpiro = function (sourceCubicContour, gizmo) {
 	return fairifyImpl(sourceCubicContour, gizmo, SpiroBuilder);

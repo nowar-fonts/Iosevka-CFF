@@ -127,6 +127,12 @@ module.exports = function () {
 			maxSizeOfInstructions: 0,
 			maxComponentElements: 0,
 			maxComponentDepth: 0
+		},
+		CFF_: {
+			isCID: false,
+			// Use same CFF fontName for all variants, and thus `CFF ` table can be shared in OTC file.
+			// “CFF2Font” is a safe choice. It is the default value when converting OpenType/CFF2 font to OpenType/CFF1 using fontTools.
+			fontName: "CFF2Font"
 		}
 	};
 };

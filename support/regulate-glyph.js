@@ -4,7 +4,7 @@ const Glyph = require("./glyph");
 const autoRef = require("./autoref");
 const caryllShapeOps = require("caryll-shapeops");
 const curveUtil = require("./curve-util");
-const { fairifyQuad } = require("./fairify");
+const { fairifyCubic } = require("./fairify");
 const Transform = require("./transform");
 
 function regulateGlyph(g, skew) {
@@ -39,7 +39,7 @@ function simplifyContours(contours) {
 	const result = [];
 	for (const contour of simplified) {
 		if (contour.length <= 2) continue;
-		result.push(curveUtil.cleanupQuadContour(fairifyQuad(contour, gizmo)));
+		result.push(fairifyCubic(contour, gizmo));
 	}
 	return result;
 }
@@ -69,7 +69,7 @@ module.exports = function (gs, skew) {
 
 	// autoref
 	gs = gs.map((g, j) => ((g.glyphOrder = j), g)).sort(byGlyphPriority);
-	autoRef(gs, excludeUnicode);
+	// autoRef(gs, excludeUnicode);
 
 	// regulate
 	for (let g of gs) regulateGlyph(g, skew);

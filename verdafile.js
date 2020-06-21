@@ -387,7 +387,7 @@ const BuildTTF = file.make(
 );
 
 function optimizedOtfcc(from, to) {
-	return run(OTFCC_BUILD, from, ["-o", `${to}`], ["-O3", "--keep-average-char-width", "-q"]);
+	return run(OTFCC_BUILD, from, ["-o", `${to}`], ["-O2", "-i", "--keep-average-char-width", "-q"]);
 }
 
 const BuildCM = file.make(
