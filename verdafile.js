@@ -27,12 +27,12 @@ const TTCIZE = ["node", "./node_modules/otfcc-ttcize/bin/_startup"];
 const webfontFormats = [
 	["woff2", "woff2"],
 	["woff", "woff"],
-	["ttf", "truetype"]
+	["otf", "opentype"]
 ];
 
-const SINGLE_GROUP_EXPORT_PREFIX = `ttf`;
+const SINGLE_GROUP_EXPORT_PREFIX = `otf`;
 const COLLECTION_EXPORT_PREFIX = `pkg`;
-const TTC_ONLY_COLLECTION_EXPORT_PREFIX = `ttc`;
+const TTC_ONLY_COLLECTION_EXPORT_PREFIX = `otc`;
 
 const BUILD_PLANS = path.relative(__dirname, path.resolve(__dirname, "./build-plans.toml"));
 const PRIVATE_BUILD_PLANS = path.relative(
@@ -362,7 +362,7 @@ const CollectionPartsOf = computed.group("metadata:collection-parts-of", async (
 ///////////////////////////////////////////////////////////
 
 const BuildTTF = file.make(
-	(gr, fn) => `${BUILD}/${gr}/${fn}.ttf`,
+	(gr, fn) => `${BUILD}/${gr}/${fn}.otf`,
 	async (target, output, gr, fn) => {
 		const [fi, useTtx] = await target.need(FontInfoOf(fn), OptimizeWithTtx, Version);
 		const charmap = output.dir + "/" + output.name + ".charmap";
@@ -403,54 +403,42 @@ const BuildCM = file.make(
 
 // Per group file
 const DistUnhintedTTF = file.make(
-	(gr, fn) => `${DIST}/${gr}/ttf-unhinted/${fn}.ttf`,
+	(gr, fn) => `${DIST}/${gr}/otf/${fn}.otf`,
 	async (target, path, gr, f) => {
 		const [from] = await target.need(BuildTTF(gr, f), de`${path.dir}`);
 		await cp(from.full, path.full);
 	}
 );
-const DistHintedTTF = file.make(
-	(gr, fn) => `${DIST}/${gr}/ttf/${fn}.ttf`,
-	async (target, path, gr, f) => {
-		const [{ hintParams }] = await target.need(FontInfoOf(f));
-		const [from] = await target.need(BuildTTF(gr, f), de`${path.dir}`);
-		await run("ttfautohint", hintParams, from.full, path.full);
-	}
-);
 const DistWoff = file.make(
-	(gr, fn) => `${DIST}/${gr}/woff/${fn}.woff`,
+	(gr, fn) => `${DIST}/${gr}/otf-woff/${fn}.woff`,
 	async (target, path, group, f) => {
-		const [from] = await target.need(DistHintedTTF(group, f), de`${path.dir}`);
+		const [from] = await target.need(DistUnhintedTTF(group, f), de`${path.dir}`);
 		await node(`utility/ttf-to-woff.js`, from.full, path.full);
 	}
 );
 const DistWoff2 = file.make(
-	(gr, fn) => `${DIST}/${gr}/woff2/${fn}.woff2`,
+	(gr, fn) => `${DIST}/${gr}/otf-woff2/${fn}.woff2`,
 	async (target, path, group, f) => {
-		const [from] = await target.need(DistHintedTTF(group, f), de`${path.dir}`);
+		const [from] = await target.need(DistUnhintedTTF(group, f), de`${path.dir}`);
 		await node(`utility/ttf-to-woff2.js`, from.full, path.full);
 	}
 );
 
 // Group-level
-const GroupTTFs = task.group("ttf", async (target, gid) => {
-	const [ts] = await target.need(GroupFontsOf(gid));
-	await target.need(ts.map(tn => DistHintedTTF(gid, tn)));
-});
-const GroupUnhintedTTFs = task.group("ttf-unhinted", async (target, gid) => {
+const GroupUnhintedTTFs = task.group("otf", async (target, gid) => {
 	const [ts] = await target.need(GroupFontsOf(gid));
 	await target.need(ts.map(tn => DistUnhintedTTF(gid, tn)));
 });
-const GroupWoffs = task.group("woff", async (target, gid) => {
+const GroupWoffs = task.group("otf-woff", async (target, gid) => {
 	const [ts] = await target.need(GroupFontsOf(gid));
 	await target.need(ts.map(tn => DistWoff(gid, tn)));
 });
-const GroupWoff2s = task.group("woff2", async (target, gid) => {
+const GroupWoff2s = task.group("otf-woff2", async (target, gid) => {
 	const [ts] = await target.need(GroupFontsOf(gid));
 	await target.need(ts.map(tn => DistWoff2(gid, tn)));
 });
 const GroupFonts = task.group("fonts", async (target, gid) => {
-	await target.need(GroupTTFs(gid), GroupUnhintedTTFs(gid), GroupWoffs(gid), GroupWoff2s(gid));
+	await target.need(GroupUnhintedTTFs(gid), GroupWoffs(gid), GroupWoff2s(gid));
 });
 
 // Webfont CSS
@@ -476,7 +464,7 @@ const ExportTtcSet = task.group("collection-fonts", async (target, cid) => {
 	return files;
 });
 const ExportSuperTtc = file.make(
-	f => `${DIST}/super-ttc/${f}.ttc`,
+	f => `${DIST}/super-otc/${f}.ttc`,
 	async (target, out, f) => {
 		await target.need(de(out.dir));
 		const [inputs] = await target.need(ExportTtcSet(f));
@@ -488,7 +476,7 @@ const ExportSuperTtc = file.make(
 	}
 );
 const ExportTtc = file.make(
-	(gr, f) => `${DIST}/export/${gr}/ttc/${f}.ttc`,
+	(gr, f) => `${DIST}/export/${gr}/otc/${f}.ttc`,
 	async (target, out, gr, f) => {
 		const [parts] = await target.need(CollectionPartsOf(f));
 		await buildTtcForFile(target, parts, out);
@@ -497,11 +485,8 @@ const ExportTtc = file.make(
 async function buildTtcForFile(target, parts, out) {
 	const [useTtx] = await target.need(OptimizeWithTtx, de`${out.dir}`);
 	const [ttfInputs] = await target.need(parts.map(part => BuildTTF(part.dir, part.file)));
-	const tmpTtc = `${out.dir}/${out.name}.unhinted.ttc`;
 	const ttfInputPaths = ttfInputs.map(p => p.full);
-	await run(TTCIZE, ttfInputPaths, ["-o", tmpTtc], useTtx ? "--ttx-loop" : null);
-	await run("ttfautohint", tmpTtc, out.full);
-	await rm(tmpTtc);
+	await run(TTCIZE, ttfInputPaths, ["-o", out.full], useTtx ? "--ttx-loop" : null);
 }
 
 // Collection Export
@@ -705,7 +690,7 @@ const SampleImages = task(`sample-images`, async target => {
 	);
 });
 
-const AllTtfArchives = task(`all:ttf`, async target => {
+const AllTtfArchives = task(`all:otf`, async target => {
 	const [exportPlans] = await target.need(ExportPlans);
 	await target.need(Object.keys(exportPlans).map(GroupArchive));
 });
@@ -715,12 +700,12 @@ const CollectionArchives = task(`all:pkg`, async target => {
 	await target.need(Object.keys(collectPlans.groupDecomposition).map(CollectionArchive));
 });
 
-const AllTtcArchives = task(`all:ttc`, async target => {
+const AllTtcArchives = task(`all:otc`, async target => {
 	const [collectPlans] = await target.need(CollectPlans);
 	await target.need(Object.keys(collectPlans.groupDecomposition).map(TtcOnlyCollectionArchive));
 });
 
-const SpecificSuperTtc = task.group(`super-ttc`, async (target, gr) => {
+const SpecificSuperTtc = task.group(`super-otc`, async (target, gr) => {
 	await target.need(ExportSuperTtc(gr));
 });
 

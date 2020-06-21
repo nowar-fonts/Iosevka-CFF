@@ -6,7 +6,6 @@ const colors = require("colors/safe");
 console.log("Checking External Dependencies");
 check("otfccdump");
 check("otfccbuild");
-check("ttfautohint");
 check("otf2otc");
 checkOptional("ttx");
 
