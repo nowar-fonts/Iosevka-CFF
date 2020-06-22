@@ -109,6 +109,9 @@ isItalic = true
 slantAngle = 10
 jhook = 120
 
+[s-cursive]
+isItalic = true
+
 [s-oblique]
 isOblique = true
 slantAngle = 10
