@@ -17,15 +17,25 @@ upright = ['v-i-italic', 'v-l-italic', "v-f-tailed", 'v-r-top-serifed']
 [buildPlans.cursive.post]
 design = ["diversity-1"]
 
+[weights.light]
+shape = 280
+menu  = 300
+css   = 300
+
 [weights.regular]
-shape = 410
+shape = 405
 menu  = 400
 css   = 400
 
 [weights.medium]
-shape = 525
+shape = 520
 menu  = 500
 css   = 500
+
+[weights.bold]
+shape = 750
+menu  = 700
+css   = 700
 
 [slants]
 upright = "normal"
