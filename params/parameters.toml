@@ -12,14 +12,14 @@ description = 'Spatial efficient monospace font family for programming. Built fr
 leading = 1250     # Default line height times 1000.
 descenderPad = 0   # Additional line height, added to descender.
 width = 500        # Character width. DON'T EDIT THIS. Use `wd-#` selectors below.
-cap = 735          # Cap height (as well as ascender).
-xheight = 530      # X-height.
-#descender = -205  # Depth of descender. Currently unused.
+cap = 720          # Cap height (as well as ascender).
+xheight = 540      # X-height.
+#descender = -180  # Depth of descender. Currently unused.
 winMetricAscenderPad  = 0 # Padding of Win ascnder metrics to avoid clipping. See #343
 winMetricDescenderPad = 0 # Padding of Win descender metrics to avoid clipping. See #343
 
 symbolMid = 340    # Center of parens, maths, geometrics...
-parenSize = 966    # Size of parens, brackets, braces, slashes, etc.
+parenSize = 920    # Size of parens, brackets, braces, slashes, etc.
 operSize = 0.80    # Size of mathematical operators (cups, etc.)
 tackSize = 0.80    # Size of logical operators (tacks, etc.)
 bgopSize = 1.10    # Size of "taller" mathematical operators
@@ -291,7 +291,7 @@ periodsize = 200
 [shapeWidth.multiplies.blend.500]
 width        = 1
 stroke       = 1
-sb           = 1
+sb           = 0.8
 jut          = 1
 longjut      = 1
 rhook        = 1
@@ -299,71 +299,27 @@ rbalance     = 1
 tbalance     = 1
 smallsmooth  = 1
 
-[shapeWidth.multiplies.blend.664]
-width        = 1.328 # 664 for normal char
-stroke       = 1.103 # Make strokes a little thicker
-sb           = 1.777
-jut          = 1.323
-longjut      = 1.323
-rhook        = 1.323
-rbalance     = 1.236
-tbalance     = 1.210
-smallsmooth  = 1.103
+[shapeWidth.multiplies.blend.560]
+width        = 1.12
+stroke       = 1.06
+sb           = 0.86
+jut          = 1.12
+longjut      = 1.12
+rhook        = 1.12
+rbalance     = 1.12
+tbalance     = 1.08
+smallsmooth  = 1.06
 
-[shapeWidth.multiplies.blend.618]
-width        = 1.236 # 618 for normal char
-stroke       = 1.075 # Make strokes a little thicker
-sb           = 1.539
-jut          = 1.233
-longjut      = 1.233
-rhook        = 1.233
-rbalance     = 1.236
-tbalance     = 1.154
-smallsmooth  = 1.075
-
-[shapeWidth.multiplies.blend.576]
-width        = 1.152 # 576mem for normal char
-stroke       = 1.050 # Make strokes a little thicker
-sb           = 1.333
-jut          = 1.150
-longjut      = 1.150
-rhook        = 1.150
-rbalance     = 1.152
-tbalance     = 1.100
-smallsmooth  = 1.050
-
-[shapeWidth.multiplies.blend.537]
-width        = 1.074 # 537mem for normal char
-stroke       = 1.023 # Make strokes a little thicker
-sb           = 1.154
-jut          = 1.072
-longjut      = 1.072
-rhook        = 1.072
-rbalance     = 1.074
-tbalance     = 1.049
-smallsmooth  = 1.023
-
-[shapeWidth.multiplies.blend.466]
-width        = 0.932 # 466mem for normal char
-stroke       = 0.975
-sb           = 0.866
-jut          = 0.933
-longjut      = 0.933
+[shapeWidth.multiplies.blend.440]
+width        = 0.88
+stroke       = 0.94
+sb           = 0.74
+jut          = 0.88
+longjut      = 0.88
 rhook        = 1
-rbalance     = 0.931
-tbalance     = 0.953
-smallsmooth  = 0.975
-
-[shapeWidth.multiplies.blend.434]
-width        = 0.868 # 434mem for normal char
-stroke       = 0.952
-sb           = 0.750
-jut          = 0.870
-longjut      = 0.870
-rhook        = 1
-rbalance     = 0.868
-tbalance     = 0.909
-smallsmooth  = 0.952
+rbalance     = 0.88
+tbalance     = 0.92
+smallsmooth  = 0.94
 
 ###################################################################################################
 ### Metric-override hives

@@ -11,7 +11,7 @@ design = ["diversity-2"]
 
 [buildPlans.cursive]  # based on Iosevka Sparkle
 family  = "Nowar DIN Cursive LCG"
-design  = ["type", "s-cursive", "v-at-fourfold", "v-j-narrow-serifed", "no-cv-ss", "no-ligation"]
+design  = ["type", "s-cursive", "v-at-fourfold", "v-j-narrow-serifed", "v-w-curly", "no-cv-ss", "no-ligation"]
 upright = ['v-i-italic', 'v-l-italic', "v-f-tailed", 'v-r-top-serifed']
 
 [buildPlans.cursive.post]
